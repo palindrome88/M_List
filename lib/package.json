@@ -1,0 +1,22 @@
+{
+  "name": "m_list",
+  "version": "1.0.0",
+  "description": "A website to build movie lists",
+  "main": "Gruntfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "browserify": "^16.1.1",
+    "grunt": "^1.0.2",
+    "grunt-browserify": "^5.2.0",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-sass": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-eslint": "^20.1.0",
+    "jshint": "^2.9.5",
+    "jshint-stylish": "^2.2.1"
+  }
+}
