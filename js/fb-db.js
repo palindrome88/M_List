@@ -26,7 +26,7 @@ let connectionTest = () => {
         });
     };
 
-// POST to Firebase written posts
+// POST to Firebase written posts function.
 
 let postCritique = (userPost) => {
 
