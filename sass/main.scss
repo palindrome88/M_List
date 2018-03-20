@@ -14,17 +14,16 @@ body {
 }
 
 
-.navbar{
-    background-color: #16DB65 !important;
-}
-            
-.dynamic-card-container{
-            
-            
-}
+
 
 p{
     font-family: teimer-web, serif;
     font-style: normal;
     font-weight: 300;
+}
+
+.navborder{
+    border-bottom: 10px  #16DB65;
+    border-style: none none double;
+    
 }
