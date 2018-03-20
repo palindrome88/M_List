@@ -6,7 +6,7 @@ let mdKey = require ("./md-key.js");
 console.log("fetch-api.js is attached.");
 
 function fetchMovie(movieSearchQuery){
-
+// Search Bar function
     return new Promise((resolve,reject) =>{
         let movieLoader = new XMLHttpRequest();
 
