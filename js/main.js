@@ -1,12 +1,63 @@
 "use strict";
 
-
+// REQUIRE statments
 let fetchAPI = require ("./fetch-api.js"),
     db = require("./fb-db.js"),
     user = require ("./users.js"),
     $ = require ("jquery");
+// DOCUMENT OBJECTS
+
+let inputBar = document.getElementById("search-bar-content");
+let submitButton = document.getElementById("submit-button");
+let profileArea = document.getElementById("profile-content");
+
+$("#goog-login").click(function() {
+        console.log("clicked auth");
+        user.logInGoogle()
+        .then((result) => {
+
+            // Print to DOM user details like photo or name using 
+            //result.user.displayName && result.additionalUserInfo.profile.picture
+          console.log("result from login", result);
+          profileArea.innerHTML = `<img src=${result.additionalUserInfo.profile.picture} height="100" width="100">
+          </br><p>${result.user.displayName}</p>`;
+          checkUser(result.user.uid);
+          $("#goog-login").addClass("is-hidden");
+          
+          
+        });
+    });
+
+function executeApplication(allData, data){
+    console.log("Running executeApplication().");
+    let dataUID = data[0].uid;
+      console.log("Data from Firebase", data, allData);
+      let key = Object.keys(allData);
+      console.log("Num of keys in allDakey", key);
+      key = key[0];
+      console.log("KEY: ", key);
+
+      inputBar.addEventListener("keyup", function(e){
+        if (e.keyCode === 13 && e.target.value != "")  {
+            let userInput = e.target.value;
+            console.log("Content in search bar, looking for movie", userInput);
 
 
+            fetchAPI.fetchMovie(userInput).then(
+                (resolve)=>{
+                    console.log("Resolved:", resolve);
+            },
+                (reject)=>{
+                    console.log("Rejected:", reject);
+            }
+        );
+        }
+
+
+
+      });
+
+}
 
 function checkUser(data){
 
@@ -23,7 +74,7 @@ function checkUser(data){
         
         if (ID.length > 0) {
             console.log("User history found. Using User:", ID[0].uid);
-            //runTheApp(newdata, ID);
+            executeApplication(newdata, ID);
             user.setUser(ID);
         }
 
@@ -46,11 +97,13 @@ function checkUser(data){
 function setUser(keyobject, data){ 
     let userInfo = {};
     userInfo.uid = data; 
+
     // Set the credentials as a property of a new object. Firebase requires an object to be sent.
+
     console.log("userInfo", userInfo);
     db.setfbUser(userInfo).then((primarykey)=>{
         console.log("New User has been set with primary key:", primarykey);
-        //runTheApp(primarykey);
+        executeApplication(primarykey);
     });
     
   }
