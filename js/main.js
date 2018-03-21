@@ -14,7 +14,7 @@ let submitButton = document.getElementById("submit-button");
 
 // DATA
 
-let movieObject = {};
+let movieObject = [];
 
 $("#goog-login").click(function() {
         console.log("clicked auth");
@@ -49,11 +49,13 @@ function executeApplication(allData, data){
 
 
             fetchAPI.fetchMovie(userInput).then(
-                (results)=>{
-                    console.log("Resolved:", results);
+                (resolved)=>{
+                    console.log("Resolved:", resolved);
                     // REORGANIZE data.
+                    let results = resolved.results;
                     for (var i = 0; i < results.length; i++) {
                         let item = results[i];
+                        //console.log(results[i]);
                         item.release_date = item.release_date.slice(0, item.release_date.indexOf('-'));
                         if (item.poster_path === null) {
                           movieObject[i] = {
@@ -80,8 +82,14 @@ function executeApplication(allData, data){
                                 };
                             }
                         }
+                        // Object.values(movieObject)
+                        // movieObject.forEach(function(item, index){
+                        //     console.log(`Movie Object ${index}`, item);
+                        // });
                     record.cardPrinter(movieObject);
-                    },
+                   
+                
+                },
                 (reject)=>{
                     console.log("Rejected:", reject);
             }
