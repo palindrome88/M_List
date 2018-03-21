@@ -4,12 +4,17 @@
 let fetchAPI = require ("./fetch-api.js"),
     db = require("./fb-db.js"),
     user = require ("./users.js"),
+    record = require ("./dom-builder.js"),
     $ = require ("jquery");
 // DOCUMENT OBJECTS
 
 let inputBar = document.getElementById("search-bar-content");
 let submitButton = document.getElementById("submit-button");
-let profileArea = document.getElementById("profile-content");
+
+
+// DATA
+
+let movieObject = {};
 
 $("#goog-login").click(function() {
         console.log("clicked auth");
@@ -19,8 +24,8 @@ $("#goog-login").click(function() {
             // Print to DOM user details like photo or name using 
             //result.user.displayName && result.additionalUserInfo.profile.picture
           console.log("result from login", result);
-          profileArea.innerHTML = `<img src=${result.additionalUserInfo.profile.picture} height="100" width="100">
-          </br><p>${result.user.displayName}</p>`;
+          
+          record.printUserProfile(result);
           checkUser(result.user.uid);
           $("#goog-login").addClass("is-hidden");
           
@@ -44,9 +49,39 @@ function executeApplication(allData, data){
 
 
             fetchAPI.fetchMovie(userInput).then(
-                (resolve)=>{
-                    console.log("Resolved:", resolve);
-            },
+                (results)=>{
+                    console.log("Resolved:", results);
+                    // REORGANIZE data.
+                    for (var i = 0; i < results.length; i++) {
+                        let item = results[i];
+                        item.release_date = item.release_date.slice(0, item.release_date.indexOf('-'));
+                        if (item.poster_path === null) {
+                          movieObject[i] = {
+                            title: item.title,
+                            year: item.release_date,
+                            poster: 'images/PLACEHOLDER.jpg',
+                            overview: item.overview,
+                            movieID: item.id,
+                            rating: 0,
+                            watched: false,
+                            inFB: false
+                            };
+                        }
+                         else {
+                            movieObject[i] = {
+                              title: item.title,
+                              year: item.release_date,
+                              poster: `http://image.tmdb.org/t/p/w500${item.poster_path}`,
+                              overview: item.overview,
+                              movieID: item.id,
+                              rating: 0,
+                              watched: false,
+                              inFB: false
+                                };
+                            }
+                        }
+                    record.cardPrinter(movieObject);
+                    },
                 (reject)=>{
                     console.log("Rejected:", reject);
             }
