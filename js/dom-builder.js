@@ -8,11 +8,13 @@ let cardList = document.getElementById("card-area"),
 
 
 let db = require("./fb-db"),
-    $ = require("jquery");
+    $ = require("jquery"),
+    fetchAPI = require("./fetch-api");
 
 // objects
 let data;
 let critInput;
+let movieObject = {};
 
 // Event Listeners
 parentRater.addEventListener("click", submitMovieID, false);
@@ -63,7 +65,52 @@ function printUserProfile(result){
     $("#profile-history").click(function(){
         let UID = result.user.uid;
         console.log("UID:", UID);
-        db.getUserHistory(UID);
+        db.getUserHistory(UID).then((resolve)=> {
+            let arr = Object.values(resolve);
+            let arr2 = Object.keys(resolve);
+            // get images from movieDB using a Promise.
+            console.log("Arr: ", arr, "Keys: ", arr2);
+            cardList.innerHTML = " ";
+            cardList.innerHTML = " USER HISTORY ";
+            arr.forEach(function(item, index){
+                // TESTS //
+                let movieID = arr[index].movieID;
+                console.log("Movie ID: ", movieID );
+
+
+                // cardList.innerHTML = arr[index].movieID + " " + arr[index].uid;
+                fetchAPI.fetchID(movieID).then((thisMovie)=>{
+                    
+                        cardList.innerHTML += 
+                        `<div class="p-2">
+                            <div class="col xl4 l6 m6 s12" id=card--${thisMovie.id}>
+                                    <div class="card sticky-action" id=cardSticky${thisMovie.id}>
+                                        <div class="card-image waves-effect waves-block waves-light" id=cardImage${thisMovie.id}>
+                                        <img id="activator icon${thisMovie.id}" class="movie-image" height="300" width="200" src="http://image.tmdb.org/t/p/w500${thisMovie.poster_path}">
+                                        </div>
+                                        <div class="card-content">
+                                                <span class="card-title activator grey-text text-darken-4 icon${thisMovie.id} col s10 truncate">${thisMovie.title}</span>
+                                            <i class="material-icons right icon${thisMovie.id} col s2 activator">more_vert</i>
+                                        </div>
+                                        <div class="card-reveal" id=reveal${thisMovie.id}>
+                                            <span class="card-title grey-text text-darken-4">Overview<i class="material-icons right">close</i></span>
+                                            <span>(${thisMovie.release_date})</span>
+                                            <p>${thisMovie.overview}</p>
+                                            <span class="card-title grey-text text-darken-4">Cast</span>
+                                            <p id=castReveal${thisMovie.id}></p>
+                                        </div>
+                                            <div id=rate-${index} class=rateYo></div>
+                                            <button id="${thisMovie.id}" value="${thisMovie.id}" class="rate-button">Rate Me</button>
+                                    </div>
+                                </div>
+                        </div>`;
+
+
+                });
+                
+            });
+
+        });
     });
 }
 

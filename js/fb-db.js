@@ -40,7 +40,7 @@ let postCritique = (userPost) => {
         return postData;
     });
 };
-
+// GET User Post History according to UID.
 let getUserHistory = (userInfo) => {
     console.log("We can now get the user's history");
     return $.ajax({
