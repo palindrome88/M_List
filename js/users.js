@@ -17,6 +17,7 @@ firebase.auth().onAuthStateChanged((user) => {
 });
 
 function logInGoogle() {
+	console.log("Logging into Google.", provider);
 	return firebase.auth().signInWithPopup(provider);
 }
 

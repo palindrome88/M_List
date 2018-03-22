@@ -22,14 +22,15 @@
                 
                 <form class="form-inline my-2 my-lg-0">
                     <input class="form-control mr-sm-2" id="search-bar-content" type="search" placeholder="MList" aria-label="Search">
-                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    <button class="btn btn-outline-success my-2 my-sm-0" id= "submit-button"type="submit">Search</button>
                 </form>
                 </li>
             </ul>
 
         <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
                             <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
+                                <button id="goog-login">Login</button>
+                            </li>
                             </li>
                       <!-- DROP DOWN MENU 
                             <li class="nav-item dropdown">
@@ -44,10 +45,12 @@
                             </div>
                             </li>
                             -->
+                            <button id="goog-logout">Logout</button>
                         
                        
                             <li class="nav-item">
-                            <a class="nav-link disabled" href="#">Disabled</a>
+                            <!--<a class="nav-link disabled" href="#">Disabled</a>-->
+                            <div id="profile-content"></div>
                             </li>
                         
                     </div>
@@ -57,12 +60,8 @@
 
               <div class="dynamic-card-container">
                   <div class="d-flex justify-content-end">
-                      <div class="d-flex flex-column">
-                            <div class="p-2">CARD ONE</div>
-                        <!---
-                              <div class="p-2">CARD TWO</div>
-                              <div class="p-2">CARD THREE</div> 
-                            -->
+                      <div class="d-flex flex-column" id="card-area">
+                         
                           </div>
                       </div>  
                 </div>
@@ -75,5 +74,6 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="dist/app.js"></script>
 </body>
 </html>
