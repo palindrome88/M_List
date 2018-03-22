@@ -12,6 +12,7 @@ let inputBar = document.getElementById("search-bar-content");
 let submitButton = document.getElementById("submit-button");
 
 
+
 // DATA
 
 let movieObject = [];
@@ -33,9 +34,16 @@ $("#goog-login").click(function() {
         });
     });
 
+$("#goog-logout").click(function() {
+    console.log("clicked log out");
+    user.logOut();
+});
+
+
 function executeApplication(allData, data){
     console.log("Running executeApplication().");
     let dataUID = data[0].uid;
+    console.log("UID", dataUID);
       console.log("Data from Firebase", data, allData);
       let key = Object.keys(allData);
       console.log("Num of keys in allDakey", key);
@@ -86,19 +94,16 @@ function executeApplication(allData, data){
                         // movieObject.forEach(function(item, index){
                         //     console.log(`Movie Object ${index}`, item);
                         // });
-                    record.cardPrinter(movieObject);
+                    record.cardPrinter(movieObject, allData);
                    
                 
                 },
                 (reject)=>{
                     console.log("Rejected:", reject);
-            }
-        );
+            });
         }
-
-
-
       });
+      
 
 }
 

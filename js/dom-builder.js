@@ -1,18 +1,28 @@
 "use strict";
 // Document objects
-let cardList = document.getElementById("card-area");
-let profileArea = document.getElementById("profile-content");
-let parentRater = document.getElementById("card-area");
+let cardList = document.getElementById("card-area"),
+    profileArea = document.getElementById("profile-content"),
+    parentRater = document.getElementById("card-area");
+    
+    
+
+
+let db = require("./fb-db"),
+    $ = require("jquery");
+
+// objects
+let data;
+let critInput;
 
 // Event Listeners
 parentRater.addEventListener("click", submitMovieID, false);
 
-
-function cardPrinter(thisMovie){
+function cardPrinter(thisMovie, allData){
+    data = allData;
+    
     // Prints the cards for each movie for selecting to be rated.
 
     thisMovie.forEach(function(item, index){
-        
 
         cardList.innerHTML += 
         `<div class="p-2">
@@ -44,28 +54,60 @@ function cardPrinter(thisMovie){
 }
 
 function printUserProfile(result){
-    // Prints the user profile information upon sign in.
+    // Prints the USER PROFILE information upon sign in.
     console.log("record.printUserProfile() executed.");
-    profileArea.innerHTML = `<img src=${result.additionalUserInfo.profile.picture} height="100" width="100">
+    profileArea.innerHTML = `<img src=${result.additionalUserInfo.profile.picture} id="profile-history" height="100" width="100">
           </br><p>${result.user.displayName}</p>`;
+
+    // USER HISTORY tied to the profile image.
+    $("#profile-history").click(function(){
+        let UID = result.user.uid;
+        console.log("UID:", UID);
+        db.getUserHistory(UID);
+    });
 }
 
-function writeCritique(){
+function writeCritique(movieID){
+    // Creates a div that overwrites the rated movies entirely.
 
+    // ISSUES -- This runs twice according to some event firing double. I don't know why as of yet but this is definitely a fix needed.
+    cardList.innerHTML = "";
+    cardList.innerHTML = `<div class="p-2">
+    <textarea id="critique" rows="4" cols="50">
+    
+    </textarea>
+    </div>`;
+
+    console.log("We can write the critique to this address: ", data);
+     let values = Object.values(data);
+   
+    values = values[0];
+    values.movieID = movieID;
+    let critiqueArea = document.getElementById("critique");
+    critiqueArea.addEventListener("keydown", function(e){
+        if (e.keyCode === 13 && e.target.value != "")  {
+            values.post = $("#critiqueArea").val();
+            console.log(values.post);
+            e.stopPropagation();
+        }
+    });
 
     
+    console.log(values);
+    db.postCritique(values).then(
+        (resolve)=>{
+            console.log(resolve);
+            
+    });
 }
+
 
 
 function submitMovieID(e) {
     // Gets the target information for button press, then calls a dom-builder method to compose the environment to make a review, then performs a db-method to send the information to the database.
     if (e.target !== e.currentTarget) {
-        var clickedItem = e.target.id;
-        console.log("Hello " + clickedItem + " " + e.target.value);
-
-        // Pass along to firebase.
-
-
+        var clickedItem = e.target.value;
+        writeCritique(clickedItem);
     }
     e.stopPropagation();
 }

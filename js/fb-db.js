@@ -30,17 +30,29 @@ let connectionTest = () => {
 
 let postCritique = (userPost) => {
 
-    console.log("url", firebase.getFBsettings().databaseURL);
+    console.log(`${firebase.getFBsettings().databaseURL}/posts.json`);
     return $.ajax({
-        url: ``,
-        method: "PUT",
-        data: ""
+        url: `${firebase.getFBsettings().databaseURL}/posts.json`,
+        method: "POST",
+        data: JSON.stringify(userPost)
     }).done((postData) =>{
         console.log("Confirmation of posted message:", postData);
         return postData;
     });
 };
 
+let getUserHistory = (userInfo) => {
+    console.log("We can now get the user's history");
+    return $.ajax({
+        url: `${firebase.getFBsettings().databaseURL}/posts.json?orderBy="uid"&"uid"="${userInfo}`,
+        method: "GET"
+    }).done((historyData)=>{
+        console.log("Confirmation of history:", historyData);
+        return historyData;
+    });
+
+
+};
 
 
 let setfbUser = (userInfo) => {
@@ -80,4 +92,4 @@ let getFBUser = (userInfo) => {
 
 
 
-module.exports = {addUserLocation, connectionTest, setfbUser, getFBUser};
+module.exports = {addUserLocation, postCritique, connectionTest, setfbUser, getFBUser, getUserHistory};
