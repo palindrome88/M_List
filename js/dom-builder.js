@@ -2,8 +2,8 @@
 // Document objects
 let cardList = document.getElementById("card-area"),
     profileArea = document.getElementById("profile-content"),
-    parentRater = document.getElementById("card-area");
-    
+    parentRater = document.getElementById("card-area"),
+    parentDelete = document.getElementById("card-area2");
     
 
 
@@ -19,9 +19,10 @@ let movieObject = {};
 // Event Listeners
 parentRater.addEventListener("click", submitMovieID, false);
 
+
 function cardPrinter(thisMovie, allData){
     data = allData;
-    
+    cardList.innerHTML = " ";
     // Prints the cards for each movie for selecting to be rated.
 
     thisMovie.forEach(function(item, index){
@@ -35,17 +36,17 @@ function cardPrinter(thisMovie, allData){
                         </div>
                         <div class="card-content">
                                 <span class="card-title activator grey-text text-darken-4 icon${thisMovie[index].movieID} col s10 truncate">${thisMovie[index].title}</span>
-                            <i class="material-icons right icon${thisMovie[index].movieID} col s2 activator">more_vert</i>
+                            <i class="material-icons right icon${thisMovie[index].movieID} col s2 activator"></i>
                         </div>
                         <div class="card-reveal" id=reveal${thisMovie[index].movieID}>
-                            <span class="card-title grey-text text-darken-4">Overview<i class="material-icons right">close</i></span>
+                            <span class="card-title grey-text text-darken-4">Overview<i class="material-icons right"></i></span>
                             <span>(${thisMovie[index].year})</span>
                             <p>${thisMovie[index].overview}</p>
-                            <span class="card-title grey-text text-darken-4">Cast</span>
+                            
                             <p id=castReveal${thisMovie[index].movieID}></p>
                         </div>
                             <div id=rate-${index} class=rateYo></div>
-                            <button id="${thisMovie[index].movieID}" value="${thisMovie[index].movieID}" class="rate-button">Rate Me</button>
+                            <button id="${thisMovie[index].movieID}" value="${thisMovie[index].movieID}"  class="btn btn-secondary">Rate Me</button>
                     </div>
                 </div>
         </div>`;
@@ -58,8 +59,8 @@ function cardPrinter(thisMovie, allData){
 function printUserProfile(result){
     // Prints the USER PROFILE information upon sign in.
     console.log("record.printUserProfile() executed.");
-    profileArea.innerHTML = `<img src=${result.additionalUserInfo.profile.picture} id="profile-history" height="100" width="100">
-          </br><p>${result.user.displayName}</p>`;
+    profileArea.innerHTML = `<span class="border border-success"><img src=${result.additionalUserInfo.profile.picture}  id="profile-history" class="rounded-circle" height="100" width="100">
+          </br><p><i>${result.user.displayName}</i></p></span>`;
 
     // USER HISTORY tied to the profile image.
     $("#profile-history").click(function(){
@@ -69,7 +70,7 @@ function printUserProfile(result){
             let arr = Object.values(resolve);
             let arr2 = Object.keys(resolve);
             // get images from movieDB using a Promise.
-            console.log("Arr: ", arr, "Keys: ", arr2);
+            console.log("Values: ", arr, "Keys: ", arr2);
             cardList.innerHTML = " ";
             cardList.innerHTML = " USER HISTORY ";
             arr.forEach(function(item, index){
@@ -93,14 +94,15 @@ function printUserProfile(result){
                                             <i class="material-icons right icon${thisMovie.id} col s2 activator">more_vert</i>
                                         </div>
                                         <div class="card-reveal" id=reveal${thisMovie.id}>
-                                            <span class="card-title grey-text text-darken-4">Overview<i class="material-icons right">close</i></span>
+                                            <span class="card-title grey-text text-darken-4">Overview<i class="material-icons right"></i></span>
                                             <span>(${thisMovie.release_date})</span>
                                             <p>${thisMovie.overview}</p>
-                                            <span class="card-title grey-text text-darken-4">Cast</span>
+                                            
                                             <p id=castReveal${thisMovie.id}></p>
                                         </div>
                                             <div id=rate-${index} class=rateYo></div>
-                                            <button id="${thisMovie.id}" value="${thisMovie.id}" class="rate-button">Rate Me</button>
+                                            <button id="${thisMovie.id}" value="${arr2[index]}" class="delete-button">Delete Me</button>
+                                            
                                     </div>
                                 </div>
                         </div>`;
@@ -109,6 +111,8 @@ function printUserProfile(result){
                 });
                 
             });
+
+            parentDelete.addEventListener("click", deleteCritique, false);
 
         });
     });
@@ -119,9 +123,8 @@ function writeCritique(movieID){
 
     // ISSUES -- This runs twice according to some event firing double. I don't know why as of yet but this is definitely a fix needed.
     cardList.innerHTML = "";
-    cardList.innerHTML = `<div class="p-2">
-    <textarea id="critique" rows="4" cols="50">
-    
+    cardList.innerHTML = `<i>Write a critique!!</i></br><div class="p-2">
+    <textarea id="critique" class="form-control" rows="5" rows="4" cols="50">
     </textarea>
     </div>`;
 
@@ -131,9 +134,9 @@ function writeCritique(movieID){
     values = values[0];
     values.movieID = movieID;
     let critiqueArea = document.getElementById("critique");
-    critiqueArea.addEventListener("keydown", function(e){
+    critiqueArea.addEventListener("keypress", function(e){
         if (e.keyCode === 13 && e.target.value != "")  {
-            values.post = $("#critiqueArea").val();
+            values.post = $("#critique").val();
             console.log(values.post);
             e.stopPropagation();
         }
@@ -159,4 +162,17 @@ function submitMovieID(e) {
     e.stopPropagation();
 }
 
+
+function deleteCritique(e){
+    if (e.target !== e.currentTarget) {
+        var clickedItem = e.target.value;
+        console.log("Key of the Item to Delete", clickedItem);
+        db.deletePost(clickedItem).then((resolve)=>{
+
+            console.log("Successfully deleted", resolve);
+        });
+    }
+    e.stopPropagation();
+
+}
 module.exports = {cardPrinter, printUserProfile};

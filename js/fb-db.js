@@ -7,24 +7,6 @@ let connectionTest = () => {
     console.log("We can now append an item to a database.");
 };
 
-// Delete this.
- let addUserLocation =  (userData) => { 
-    // NOTE: I am passing in an object containing multiple objects here. It's a bit messy. userData contains two objects within, and the JSON.stringify passes it as a POST, which is an "initial posting". Firebase returns a string which is in SQL terms the "primary key", so when I want to PATCH or PUT data to this, I have to use that reference to access this data again.
-
-
-
-    console.log("url", firebase.getFBsettings().databaseURL);
-
-        return $.ajax({
-            // To add to the USER folder, for the particular user, one has to use the key, which is where the UID is contained.
-            url: `${firebase.getFBsettings().databaseURL}/users/${userData.key}.json`,
-            method: "PUT",
-            data: JSON.stringify(userData)
-        }).done((locationData) => {
-            console.log("Returned locationData in promise for addUserLocation():", locationData);
-            return locationData;
-        });
-    };
 
 // POST to Firebase written posts function.
 
@@ -86,10 +68,22 @@ let getFBUser = (userInfo) => {
     );
 };
 
+let deletePost = (key) => {
+    console.log("Deleting the contents of key: ", key);
+    return $.ajax({
+        url: `${firebase.getFBsettings().databaseURL}/posts/${key}.json"`,
+        method: "DELETE"
+    }).done((data)=>{
+        console.log("DELETED if null: ", data);
+    });
+    
+
+};
 
 
 
 
 
 
-module.exports = {addUserLocation, postCritique, connectionTest, setfbUser, getFBUser, getUserHistory};
+
+module.exports = {postCritique, connectionTest, setfbUser, getFBUser, getUserHistory, deletePost};
