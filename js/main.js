@@ -44,32 +44,52 @@ function executeApplication(allData, data){
     console.log("Running executeApplication().");
     let dataUID = data[0].uid;
     console.log("UID", dataUID);
-      console.log("Data from Firebase", data, allData);
-      let key = Object.keys(allData);
-      console.log("Num of keys in allDakey", key);
-      key = key[0];
-      console.log("KEY: ", key);
+    console.log("Data from Firebase", data, allData);
+    let key = Object.keys(allData);
+    console.log("Num of keys in allDakey", key);
+    key = key[0];
+    console.log("KEY: ", key);
+    inputBar.addEventListener("keydown", function(e){
+        enteredMovie(e, allData);
 
-      inputBar.addEventListener("keyup", function(e){
-        if (e.keyCode === 13 && e.target.value != "")  {
-            let userInput = e.target.value;
-            console.log("Content in search bar, looking for movie", userInput);
+    });
+      
 
+}
+function enteredMovie(e, allData){
+    if (e.keyCode === 13 && e.target.value != "")  {
+        let userInput = e.target.value;
+        console.log("inputBar.addEventListener() working" ,e.target.value);
+        console.log("Content in search bar, looking for movie", userInput);
+        e.preventDefault();
+        e.stopPropagation(); // Stops from closing out.
 
-            fetchAPI.fetchMovie(userInput).then(
-                (resolved)=>{
-                    console.log("Resolved:", resolved);
-                    // REORGANIZE data.
-                    let results = resolved.results;
-                    for (var i = 0; i < results.length; i++) {
-                        let item = results[i];
-                        //console.log(results[i]);
-                        item.release_date = item.release_date.slice(0, item.release_date.indexOf('-'));
-                        if (item.poster_path === null) {
-                          movieObject[i] = {
+        fetchAPI.fetchMovie(userInput).then(
+            (resolved)=>{
+                console.log("Resolved:", resolved);
+                // REORGANIZE data.
+                let results = resolved.results;
+                for (var i = 0; i < results.length; i++) {
+                    let item = results[i];
+                    //console.log(results[i]);
+                    item.release_date = item.release_date.slice(0, item.release_date.indexOf('-'));
+                    if (item.poster_path === null) {
+                        movieObject[i] = {
+                        title: item.title,
+                        year: item.release_date,
+                        poster: 'images/PLACEHOLDER.jpg',
+                        overview: item.overview,
+                        movieID: item.id,
+                        rating: 0,
+                        watched: false,
+                        inFB: false
+                        };
+                    }
+                        else {
+                        movieObject[i] = {
                             title: item.title,
                             year: item.release_date,
-                            poster: 'images/PLACEHOLDER.jpg',
+                            poster: `http://image.tmdb.org/t/p/w500${item.poster_path}`,
                             overview: item.overview,
                             movieID: item.id,
                             rating: 0,
@@ -77,37 +97,18 @@ function executeApplication(allData, data){
                             inFB: false
                             };
                         }
-                         else {
-                            movieObject[i] = {
-                              title: item.title,
-                              year: item.release_date,
-                              poster: `http://image.tmdb.org/t/p/w500${item.poster_path}`,
-                              overview: item.overview,
-                              movieID: item.id,
-                              rating: 0,
-                              watched: false,
-                              inFB: false
-                                };
-                            }
-                        }
-                        // Object.values(movieObject)
-                        // movieObject.forEach(function(item, index){
-                        //     console.log(`Movie Object ${index}`, item);
-                        // });
-                        console.log(movieObject, allData);
-                    record.cardPrinter(movieObject, allData);
-                   
+                    }
+                    
+                    
+                record.cardPrinter(movieObject, allData);
                 
-                },
-                (reject)=>{
-                    console.log("Rejected:", reject);
-            });
-        }
-      });
-      
-
+            
+            },
+            (reject)=>{
+                console.log("Rejected:", reject);
+        });
+    }
 }
-
 function checkUser(data){
 
     console.log("In checkUser(), do you mean to check " + data + "? Because that's what's being passed in the Firebase to be checked.");
