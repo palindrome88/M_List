@@ -20,6 +20,27 @@ let movieObject = {};
 /*parentRater.addEventListener("click", submitMovieID, false);
 
 */
+// Checks for id of the number.
+$(document).ready(function(){
+    $(document).on( "click", "button", function(){
+        let stringTest = event.target.className;
+        let id = parseInt(event.target.id);
+        if(!Number.isNaN(id)){ // is a number value
+            console.log("Satisfied the test:", event.target.id);
+            writeCritique(id, data);
+        }
+
+        if(Number.isNaN(id) && (stringTest.includes("delete button"))){ // is not a value AND includes the string "delete button"
+
+            console.log("This test");
+        }
+        else{ // not a button besides login and logout
+            console.log("Not a rate button press", event.target.id);
+        }
+    });
+});
+
+
 function cardPrinter(thisMovie, allData){
     data = allData;
     cardList.innerHTML = " ";
@@ -47,12 +68,13 @@ function cardPrinter(thisMovie, allData){
                             <p id=castReveal${thisMovie[index].movieID}></p>
                         </div>
                         <div id=rate-${index} class=rateYo></div>
-                        <button id="${thisMovie[index].movieID}" value="${thisMovie[index].movieID}"  class="btn btn-secondary">Rate Me</button>
                     </div>
-            </div>
+                        <button class= "btn btn-secondary" id="${thisMovie[index].movieID}"> Rate this movie! </button>
+                </div>
         </div>`;
-
+        
     });
+    
     
     
 }
@@ -119,37 +141,76 @@ function printUserProfile(result){
     });
 }
 
-function writeCritique(movieID){
-    // Creates a div that overwrites the rated movies entirely.
-
-    // ISSUES -- This runs twice according to some event firing double. I don't know why as of yet but this is definitely a fix needed.
+function writeCritique(movieID, allData){
+    // Prints Critique details
     cardList.innerHTML = "";
     cardList.innerHTML = `<i>Write a critique!!</i></br><div class="p-2">
     <textarea id="critique" class="form-control" rows="5" rows="4" cols="50">
     </textarea>
     </div>`;
 
-    console.log("We can write the critique to this address: ", data);
-     let values = Object.values(data);
-   
-    values = values[0];
-    values.movieID = movieID;
-    let critiqueArea = document.getElementById("critique");
-    critiqueArea.addEventListener("keypress", function(e){
-        if (e.keyCode === 13 && e.target.value != "")  {
-            values.post = $("#critique").val();
-            console.log(values.post);
-            e.stopPropagation();
-        }
+    // Event listener for critique textarea, upon enter.
+    var input = $('#critique')[0].addEventListener("keydown", function(e){
+        
+        let uid = Object.values(allData);
+        uid = uid[0].uid;
+        let packet = {};
+
+    // Make a packet containing the goods.
+    if (e.keyCode === 13 && e.target.value != "")  {
+        packet.post = e.target.value;
+        packet.movieID = movieID;
+        packet.uid = uid;
+
+        submitCritique(packet);
+    }
+
     });
 
+
+    // // Creates a div that overwrites the rated movies entirely.
+
+    // // ISSUES -- This runs twice according to some event firing double. I don't know why as of yet but this is definitely a fix needed.
+    // cardList.innerHTML = "";
+    // cardList.innerHTML = `<i>Write a critique!!</i></br><div class="p-2">
+    // <textarea id="critique" class="form-control" rows="5" rows="4" cols="50">
+    // </textarea>
+    // </div>`;
+
+    // console.log("We can write the critique to this address: ", data);
+    //  let values = Object.values(data);
+   
+    // values = values[0];
+    // values.movieID = movieID;
+    // let critiqueArea = document.getElementById("critique");
+    // critiqueArea.addEventListener("keypress", function(e){
+    //     if (e.keyCode === 13 && e.target.value != "")  {
+    //         values.post = $("#critique").val();
+    //         console.log(values.post);
+    //         e.stopPropagation();
+    //     }
+    // });
+
     
-    console.log(values);
-    db.postCritique(values).then(
-        (resolve)=>{
-            console.log(resolve);
+    // console.log(values);
+    // db.postCritique(values).then(
+    //     (resolve)=>{
+    //         console.log(resolve);
             
+    // });
+}
+
+
+function submitCritique(packet){
+
+    db.postCritique(packet).then((resolve)=>{
+        console.log("Resolved db.postCritique():", resolve);
+    },
+    (reject)=>{
+        console.log("Rejected db.postCritique():", reject);
     });
+    
+
 }
 
 /*function submitMovieID(e) {
