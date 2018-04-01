@@ -94,6 +94,7 @@ function executeApplication(allData, data){
                         // movieObject.forEach(function(item, index){
                         //     console.log(`Movie Object ${index}`, item);
                         // });
+                        console.log(movieObject, allData);
                     record.cardPrinter(movieObject, allData);
                    
                 

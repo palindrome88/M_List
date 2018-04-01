@@ -151,8 +151,6 @@ function writeCritique(movieID){
     });
 }
 
-
-
 function submitMovieID(e) {
     // Gets the target information for button press, then calls a dom-builder method to compose the environment to make a review, then performs a db-method to send the information to the database.
     if (e.target !== e.currentTarget) {
@@ -161,7 +159,6 @@ function submitMovieID(e) {
     }
     e.stopPropagation();
 }
-
 
 function deleteCritique(e){
     if (e.target !== e.currentTarget) {
@@ -175,4 +172,4 @@ function deleteCritique(e){
     e.stopPropagation();
 
 }
-module.exports = {cardPrinter, printUserProfile};
+module.exports = {cardPrinter , printUserProfile};
