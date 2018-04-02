@@ -7,32 +7,14 @@ let connectionTest = () => {
     console.log("We can now append an item to a database.");
 };
 
-// Delete this.
- let addUserLocation =  (userData) => { 
-    // NOTE: I am passing in an object containing multiple objects here. It's a bit messy. userData contains two objects within, and the JSON.stringify passes it as a POST, which is an "initial posting". Firebase returns a string which is in SQL terms the "primary key", so when I want to PATCH or PUT data to this, I have to use that reference to access this data again.
-
-
-
-    console.log("url", firebase.getFBsettings().databaseURL);
-
-        return $.ajax({
-            // To add to the USER folder, for the particular user, one has to use the key, which is where the UID is contained.
-            url: `${firebase.getFBsettings().databaseURL}/users/${userData.key}.json`,
-            method: "PUT",
-            data: JSON.stringify(userData)
-        }).done((locationData) => {
-            console.log("Returned locationData in promise for addUserLocation():", locationData);
-            return locationData;
-        });
-    };
 
 // POST to Firebase written posts function.
 
 let postCritique = (userPost) => {
 
-    console.log(`${firebase.getFBsettings().databaseURL}/posts.json`);
+    console.log(`${firebase.getFBsettings().databaseURL}/critiques.json`);
     return $.ajax({
-        url: `${firebase.getFBsettings().databaseURL}/posts.json`,
+        url: `${firebase.getFBsettings().databaseURL}/critiques.json`,
         method: "POST",
         data: JSON.stringify(userPost)
     }).done((postData) =>{
@@ -40,20 +22,32 @@ let postCritique = (userPost) => {
         return postData;
     });
 };
-// GET User Post History according to UID.
+
+// GET User Critique History according to UID.
 let getUserHistory = (userInfo) => {
-    console.log("We can now get the user's history");
-    return $.ajax({
-        url: `${firebase.getFBsettings().databaseURL}/posts.json?orderBy="uid"&"uid"="${userInfo}`,
-        method: "GET"
-    }).done((historyData)=>{
-        console.log("Confirmation of history:", historyData);
-        return historyData;
+    return new Promise(function(resolve, reject){
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", `${firebase.getFBsettings().databaseURL}/critiques.json?orderBy="uid"&"uid"="${userInfo}`);
+        xhr.send();
+        xhr.addEventListener("load", function(){
+
+            var data = JSON.parse(this.responseText);
+            console.log("User history:", data);
+            resolve(data);
+        });
     });
 
-
+    // console.log("We can now get the user's history");
+    // return $.ajax({
+    //     url: `${firebase.getFBsettings().databaseURL}/critiques.json?orderBy="uid"&"uid"="${userInfo}`,
+    //     method: "GET"
+    // }).done((historyData)=>{
+    //     let arr = Object.values(historyData);
+    //     console.log("Confirmation of history:", arr);
+    //     return arr;
+    // });  
 };
-
 
 let setfbUser = (userInfo) => {
     console.log("Running to set the user.", firebase.getFBsettings().databaseURL);
@@ -86,10 +80,50 @@ let getFBUser = (userInfo) => {
     );
 };
 
+let deletePost = (key) => {
+    console.log("Deleting the contents of key: ", key);
+    return $.ajax({
+        async: true,
+        crossDomain: true,
+        url: `${firebase.getFBsettings().databaseURL}/critiques/${key}.json`,
+        method: "DELETE"
+    }).done((data)=>{
+        console.log("DELETED if null: ", data);
+    });
+    
+};
+
+let updatePost = (data, key) => {
+    console.log("Updating the contents of key: ", key);
+    return $.ajax({
+        async: true,
+        crossDomain: true,
+        url: `${firebase.getFBsettings().databaseURL}/critiques/${key}.json`,
+        method: "PUT",
+        data: JSON.stringify(data)
+    }).done((data)=>{
+        console.log(" if null: ", data);
+    });
+
+
+};
+
+let getSpecificPost = (key)=>{
+    console.log("Getting the contents of key: ", key);
+    return $.ajax({
+        async: true,
+        crossDomain: true,
+        url: `${firebase.getFBsettings().databaseURL}/critiques/${key}.json`,
+        method: "GET"
+    }).done((data)=>{
+        console.log(" Retrieved this: ", data);
+    });
+
+};
 
 
 
 
 
 
-module.exports = {addUserLocation, postCritique, connectionTest, setfbUser, getFBUser, getUserHistory};
+module.exports = {postCritique, getSpecificPost, updatePost, connectionTest, setfbUser, getFBUser, getUserHistory, deletePost};
