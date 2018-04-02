@@ -11,12 +11,12 @@ let db = require("./fb-db"),
     fetchAPI = require("./fetch-api");
 
 // objects
-let data;
-let critInput;
-let movieObject = {};
+let data,
+    critInput,
+    movieObject = {};
 
 
-// Checks for id of the button click
+// Checks for id of a button click on the entire document. Qualifies the contents of the event that, if condition is met, discerns the purpose of particular button press.
 $(document).ready(function(){
     $(document).on( "click", "button", function(){
         let stringTest = event.target.id;
@@ -58,6 +58,7 @@ function deletePostFromDOM(target){
 
 
 function editPost(updateKey){
+// Rewrite a critique already in the firebase for quick update.
 
     console.log(updateKey);
     db.getSpecificPost(updateKey).then((resolve, reject)=>{
@@ -93,9 +94,9 @@ function cardPrinter(thisMovie, allData){
     thisMovie.forEach(function(item, index){
 
         cardList.innerHTML += 
-        `<div class="p-2">
+        `<div>
             <div class="col xl4 l6 m6 s12" id=card--${thisMovie[index].movieID}>
-                    <div class="card sticky-action" id=cardSticky${thisMovie[index].movieID}>
+                    <div class="header card sticky-action" id=cardSticky${thisMovie[index].movieID}>
                         <div class="card-image waves-effect waves-block waves-light" id=cardImage${thisMovie[index].movieID}>
                             <img id="activator icon${thisMovie[index].movieID}" class="movie-image" height="300" width="200" src="${thisMovie[index].poster}">
                         </div>
@@ -112,8 +113,10 @@ function cardPrinter(thisMovie, allData){
                             <p id=castReveal${thisMovie[index].movieID}></p>
                         </div>
                         <div id=rate-${index} class=rateYo></div>
+                        <div class="container">
+                            <button class= "btn btn-secondary" id="${thisMovie[index].movieID}"> Rate this movie! </button>
+                        </div>
                     </div>
-                        <button class= "btn btn-secondary" id="${thisMovie[index].movieID}"> Rate this movie! </button>
                 </div>
         </div>`;
         
@@ -189,10 +192,11 @@ function printUserProfile(result){
     });
 }
 function printUserHistory(thisMovie, index){
+    // Critique related function. The function fires upon profile click, and prints the results from the theMovieDB api call & the firebase call. 
 
         cardList.innerHTML += 
         `<div class="p-2">
-            <div class="col xl4 l6 m6 s12" id=card--${thisMovie.movieID}>
+            <div class="card-unspecified" id=card--${thisMovie.movieID}>
                     <div class="card sticky-action" id=cardSticky${thisMovie.movieID}>
                         <div class="card-image waves-effect waves-block waves-light" id=cardImage${thisMovie.movieID}>
                             <img id="activator icon${thisMovie.movieID}" class="movie-image" height="300" width="200" src="${thisMovie.poster}">
