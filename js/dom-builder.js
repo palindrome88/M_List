@@ -89,57 +89,98 @@ function printUserProfile(result){
     $("#profile-history").click(function(){
         let UID = result.user.uid;
         console.log("UID:", UID);
-        db.getUserHistory(UID).then((resolve)=> {
+        // firstThingAsync()  
+        //     .then(function(result1) {
+        //         return Promise.all([result1, secondThingAsync(result1)]); 
+        //     })
+        //     .then(function(results) {
+        //         // do something with results array: results[0], results[1]
+        //     })
+        //     .catch(function(err){ /* ... */ });
+    
+        db.getUserHistory(UID).then(function(resolve){
+            
+
             let arr = Object.values(resolve);
-            let arr2 = Object.keys(resolve);
-            // get images from movieDB using a Promise.
-            console.log("Values: ", arr, "Keys: ", arr2);
-            cardList.innerHTML = " ";
-            cardList.innerHTML = " USER HISTORY ";
-            arr.forEach(function(item, index){
-                // TESTS //
-                let movieID = arr[index].movieID;
-                console.log("Movie ID: ", movieID );
+            let movieID;
 
-
-                // cardList.innerHTML = arr[index].movieID + " " + arr[index].uid;
-                fetchAPI.fetchID(movieID).then((thisMovie)=>{
-                    
-                        cardList.innerHTML += 
-                        `<div class="p-2">
-                            <div class="col xl4 l6 m6 s12" id=card--${thisMovie.id}>
-                                    <div class="card sticky-action" id=cardSticky${thisMovie.id}>
-                                        <div class="card-image waves-effect waves-block waves-light" id=cardImage${thisMovie.id}>
-                                        <img id="activator icon${thisMovie.id}" class="movie-image" height="300" width="200" src="http://image.tmdb.org/t/p/w500${thisMovie.poster_path}">
-                                        </div>
-                                        <div class="card-content">
-                                                <span class="card-title activator grey-text text-darken-4 icon${thisMovie.id} col s10 truncate">${thisMovie.title}</span>
-                                            <i class="material-icons right icon${thisMovie.id} col s2 activator">more_vert</i>
-                                        </div>
-                                        <div class="card-reveal" id=reveal${thisMovie.id}>
-                                            <span class="card-title grey-text text-darken-4">Overview<i class="material-icons right"></i></span>
-                                            <span>(${thisMovie.release_date})</span>
-                                            <p>${thisMovie.overview}</p>
-                                            
-                                            <p id=castReveal${thisMovie.id}></p>
-                                        </div>
-                                            <div id=rate-${index} class=rateYo></div>
-                                            <button id="${thisMovie.id}" value="${arr2[index]}" class="delete-button">Delete Me</button>
-                                            
-                                    </div>
-                                </div>
-                        </div>`;
-
-
-                });
-                
+            arr.forEach(function(item,index){
+                movieID = arr[index].movieID;
+                console.log("Movie ID:", movieID);
+                console.log("What's in arr:", arr[index]);
+                fetchAPI.fetchID(movieID).then(
+                    (resolve)=>{
+                        console.log("Do we have it?", resolve);
+                        let item = resolve;
+                        //console.log(results[i]);
+                        item.release_date = item.release_date.slice(0, item.release_date.indexOf('-'));
+                        if (item.poster_path === null) {
+                            movieObject = {
+                            title: item.title,
+                            year: item.release_date,
+                            poster: 'images/PLACEHOLDER.jpg',
+                            overview: item.overview,
+                            movieID: item.id,
+                            rating: 0,
+                            watched: false,
+                            inFB: false
+                            };
+                        }
+                        else {
+                            movieObject = {
+                                title: item.title,
+                                year: item.release_date,
+                                poster: `http://image.tmdb.org/t/p/w500${item.poster_path}`,
+                                overview: item.overview,
+                                movieID: item.id,
+                                rating: 0,
+                                watched: false,
+                                inFB: false
+                                };
+                            }
+                        printUserHistory(movieObject, index);
+                    });
             });
+            
+        
+            
+        }).catch(function(err){
 
-            parentDelete.addEventListener("click", deleteCritique, false);
-
+            console.log.bind(console);
         });
+
     });
 }
+function printUserHistory(thisMovie, index){
+    
+    
+    
+        
+        cardList.innerHTML += 
+        `<div class="p-2">
+            <div class="col xl4 l6 m6 s12" id=card--${thisMovie.id}>
+                    <div class="card sticky-action" id=cardSticky${thisMovie.id}>
+                        <div class="card-image waves-effect waves-block waves-light" id=cardImage${thisMovie.id}>
+                        <img id="activator icon${thisMovie.id}" class="movie-image" height="300" width="200" src="${thisMovie.poster}">
+                        </div>
+                        <div class="card-content">
+                                <span class="card-title activator grey-text text-darken-4 icon${thisMovie.id} col s10 truncate">${thisMovie.title}</span>
+                            <i class="material-icons right icon${thisMovie.id} col s2 activator">more_vert</i>
+                        </div>
+                        <div class="card-reveal" id=reveal${thisMovie.id}>
+                            <span class="card-title grey-text text-darken-4">Overview<i class="material-icons right"></i></span>
+                            <span>(${thisMovie.release_date})</span>
+                            <p>${thisMovie.overview}</p>
+                            
+                            <p id=castReveal${thisMovie.id}></p>
+                        </div>
+                            <div id=rate-${index} class=rateYo></div>
+                            <button id="${thisMovie.id}" value="${index}" class="delete-button">Delete Me</button>
+                            
+                    </div>
+                </div>
+        </div>`;
+    }
 
 function writeCritique(movieID, allData){
     // Prints Critique details

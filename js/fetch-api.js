@@ -37,9 +37,7 @@ function fetchID(movieSearchQuery){
     // Search Bar function
         return new Promise((resolve,reject) =>{
             let movieLoader = new XMLHttpRequest();
-            
-            // https://api.themoviedb.org/3/search/movie/468?api_key=0cb4bea7ac2765085515b786420df202&page=1
-            // https://api.themoviedb.org/3/movie/468?api_key=0cb4bea7ac2765085515b786420df202&language=en-US
+        
             console.log(`This is the string: https://${mdKey.movieKey.authDomain}/3/movie/${movieSearchQuery}${mdKey.movieKey.apiKey}&page=1`);
             movieLoader.open("GET", `https://${mdKey.movieKey.authDomain}/3/movie/${movieSearchQuery}${mdKey.movieKey.apiKey}&page=1`, true);
             movieLoader.send();

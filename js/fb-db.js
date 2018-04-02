@@ -12,9 +12,9 @@ let connectionTest = () => {
 
 let postCritique = (userPost) => {
 
-    console.log(`${firebase.getFBsettings().databaseURL}/posts.json`);
+    console.log(`${firebase.getFBsettings().databaseURL}/critiques.json`);
     return $.ajax({
-        url: `${firebase.getFBsettings().databaseURL}/posts.json`,
+        url: `${firebase.getFBsettings().databaseURL}/critiques.json`,
         method: "POST",
         data: JSON.stringify(userPost)
     }).done((postData) =>{
@@ -23,20 +23,31 @@ let postCritique = (userPost) => {
     });
 };
 
-// GET User Post History according to UID.
+// GET User Critique History according to UID.
 let getUserHistory = (userInfo) => {
-    console.log("We can now get the user's history");
-    return $.ajax({
-        url: `${firebase.getFBsettings().databaseURL}/posts.json?orderBy="uid"&"uid"="${userInfo}`,
-        method: "GET"
-    }).done((historyData)=>{
-        console.log("Confirmation of history:", historyData);
-        return historyData;
+    return new Promise(function(resolve, reject){
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", `${firebase.getFBsettings().databaseURL}/critiques.json?orderBy="uid"&"uid"="${userInfo}`);
+        xhr.send();
+        xhr.addEventListener("load", function(){
+
+            var data = JSON.parse(this.responseText);
+            console.log("User history:", data);
+            resolve(data);
+        });
     });
 
-
+    // console.log("We can now get the user's history");
+    // return $.ajax({
+    //     url: `${firebase.getFBsettings().databaseURL}/critiques.json?orderBy="uid"&"uid"="${userInfo}`,
+    //     method: "GET"
+    // }).done((historyData)=>{
+    //     let arr = Object.values(historyData);
+    //     console.log("Confirmation of history:", arr);
+    //     return arr;
+    // });  
 };
-
 
 let setfbUser = (userInfo) => {
     console.log("Running to set the user.", firebase.getFBsettings().databaseURL);
