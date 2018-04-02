@@ -5,7 +5,7 @@ let cardList = document.getElementById("card-area2"),
     parentDelete = document.getElementById("card-area");
     
 
-
+// Required objects
 let db = require("./fb-db"),
     $ = require("jquery"),
     fetchAPI = require("./fetch-api");
@@ -16,7 +16,7 @@ let critInput;
 let movieObject = {};
 
 
-// Checks for id of the number.
+// Checks for id of the button click
 $(document).ready(function(){
     $(document).on( "click", "button", function(){
         let stringTest = event.target.id;
@@ -64,13 +64,14 @@ function editPost(updateKey){
         let toEditData = resolve;
         console.log("Edit data:", toEditData);
         cardList.innerHTML = " ";
-        cardList.innerHTML += `<i>Rewrite the critique!!</i></br><div class="p-2">
-        <textarea id="critique-rewrite" class="form-control" rows="5" rows="4" cols="50">${toEditData.post}
-        </textarea>
+        cardList.innerHTML += `
+        <i>Rewrite the critique!!</i></br>
+        <div class="p-2">
+            <textarea id="critique-rewrite" class="form-control" rows="5" rows="4" cols="50">${toEditData.post}
+            </textarea>
         </div>`;
 
     var editedInput = $('#critique-rewrite')[0].addEventListener("keydown", function(e){
-
         let editedPacket = {};
 
         // Make a packet containing the goods.
@@ -80,7 +81,6 @@ function editPost(updateKey){
             editedPacket.uid = toEditData.uid;
             db.updatePost(editedPacket, updateKey);
         }
-    
       });
     });
 }
@@ -123,19 +123,18 @@ function cardPrinter(thisMovie, allData){
 function printUserProfile(result){
     // Prints the USER PROFILE information upon sign in.
     console.log("record.printUserProfile() executed.");
-    profileArea.innerHTML = `<span class="border border-success"><img src=${result.additionalUserInfo.profile.picture}  id="profile-history" class="rounded-circle" height="100" width="100">
-          </br><p><i>${result.user.displayName}</i></p></span>`;
+    profileArea.innerHTML = 
+    `<span>
+        <img src=${result.additionalUserInfo.profile.picture}  id="profile-history" class="rounded-circle" height="100" width="100"></br>
+        <p class="username"><i>${result.user.displayName}</i></p>
+    </span>`;
 
     // USER HISTORY tied to the profile image.
     $("#profile-history").click(function(){
         cardList.innerHTML = " ";
         let UID = result.user.uid;
         console.log("UID:", UID);
-       
-    
         db.getUserHistory(UID).then(function(resolve){
-            
-
             let arr = Object.values(resolve);
             let keys = Object.keys(resolve);
             
@@ -184,14 +183,9 @@ function printUserProfile(result){
                         printUserHistory(movieObject, index);
                     });
             });
-            
-        
-            
         }).catch(function(err){
-
             console.log.bind(console);
         });
-
     });
 }
 function printUserHistory(thisMovie, index){
@@ -201,23 +195,30 @@ function printUserHistory(thisMovie, index){
             <div class="col xl4 l6 m6 s12" id=card--${thisMovie.movieID}>
                     <div class="card sticky-action" id=cardSticky${thisMovie.movieID}>
                         <div class="card-image waves-effect waves-block waves-light" id=cardImage${thisMovie.movieID}>
-                        <img id="activator icon${thisMovie.movieID}" class="movie-image" height="300" width="200" src="${thisMovie.poster}">
+                            <img id="activator icon${thisMovie.movieID}" class="movie-image" height="300" width="200" src="${thisMovie.poster}">
                         </div>
                         <div class="card-content">
-                                <span class="card-title activator grey-text text-darken-4 icon${thisMovie.movieID} col s10 truncate">${thisMovie.title}</span>
+                            <span class="card-title activator grey-text text-darken-4 icon${thisMovie.movieID} col s10 truncate">${thisMovie.title}</span>
                             <i class="material-icons right icon${thisMovie.imovieIDd} col s2 activator">more_vert</i>
                         </div>
                         <div class="card-reveal" id=reveal${thisMovie.movieID}>
                             <span class="card-title grey-text text-darken-4">Overview<i class="material-icons right"></i></span>
                             <span>(${thisMovie.release_date})</span>
                             <p>${thisMovie.overview}</p>
-                            
                             <p id=castReveal${thisMovie.movieID}></p>
                         </div>
                             <div id=rate-${index} class=rateYo></div>
-                            <button id="delete-${thisMovie.movieID}" value="${thisMovie.values}" class="delete-button">Delete</button>
-                            <button id="update-${thisMovie.movieID}" value="${thisMovie.values}" class="update-button">Update</button>
+                            <h2>Critique ${index+1}</h2>
                             <p> ${thisMovie.post}</p>
+                            ${/* 
+                                ***NOTE***
+                                Buttons below.
+                                ***END NOTE**
+                                */''}
+                        <div class="container">
+                            <button id="delete-${thisMovie.movieID}" value="${thisMovie.values}" class="btn btn-primary btn-md">Delete</button>
+                            <button id="update-${thisMovie.movieID}" value="${thisMovie.values}" class="btn btn-primary btn-md">Update</button>
+                        <div>
                     </div>
                 </div>
         </div>`;
@@ -226,42 +227,41 @@ function printUserHistory(thisMovie, index){
 function writeCritique(movieID, allData){
     // Prints Critique details
     cardList.innerHTML = "";
-    cardList.innerHTML = `<i>Write a critique!!</i></br><div class="p-2">
-    <textarea id="critique" class="form-control" rows="5" rows="4" cols="50">
-    </textarea>
+    cardList.innerHTML = `
+    <i>Write a critique!!</i></br>
+    <div class="p-2">
+        <textarea id="critique" class="form-control" rows="5" rows="4" cols="50">
+        </textarea>
     </div>`;
 
     // Event listener for critique textarea, upon enter.
     var input = $('#critique')[0].addEventListener("keydown", function(e){
         
+        // Reassign the allData variable to target the UID specifically.
         let uid = Object.values(allData);
         uid = uid[0].uid;
         let packet = {};
 
-    // Make a packet containing the goods.
-    if (e.keyCode === 13 && e.target.value != "")  {
-        packet.post = e.target.value;
-        packet.movieID = movieID;
-        packet.uid = uid;
-        submitCritique(packet);
-    }
+        // Make a packet containing the goods.
+        if (e.keyCode === 13 && e.target.value != ""){
+            packet.post = e.target.value;
+            packet.movieID = movieID;
+            packet.uid = uid;
+            submitCritique(packet);
+        }
 
     });
-
-
 }
 
 
 function submitCritique(packet){
-
-    db.postCritique(packet).then((resolve)=>{
+    db.postCritique(packet).then(
+        (resolve)=>{
         console.log("Resolved db.postCritique():", resolve);
     },
-    (reject)=>{
+        (reject)=>{
         console.log("Rejected db.postCritique():", reject);
     });
-    
-
 }
 
 module.exports = {cardPrinter , printUserProfile};

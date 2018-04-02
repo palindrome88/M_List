@@ -37,16 +37,6 @@ let getUserHistory = (userInfo) => {
             resolve(data);
         });
     });
-
-    // console.log("We can now get the user's history");
-    // return $.ajax({
-    //     url: `${firebase.getFBsettings().databaseURL}/critiques.json?orderBy="uid"&"uid"="${userInfo}`,
-    //     method: "GET"
-    // }).done((historyData)=>{
-    //     let arr = Object.values(historyData);
-    //     console.log("Confirmation of history:", arr);
-    //     return arr;
-    // });  
 };
 
 let setfbUser = (userInfo) => {
