@@ -32,6 +32,7 @@ $(document).ready(function(){
             console.log("Deletion value:", event.target.value);
             let deletion = event.target.value;
             db.deletePost(deletion);
+            deletePostFromDOM(stringTest);
         }
         if(Number.isNaN(id) && (stringTest.includes("update-"))){
             console.log("Update button with id:", stringTest);
@@ -44,6 +45,17 @@ $(document).ready(function(){
         }
     });
 });
+
+function deletePostFromDOM(target){
+    // When called, delete the post from the DOM, by targeting the parent node.
+    // Target is the id name of the post to be deleted.
+
+    console.log("deletePostFromDOM() is working");
+    var isDeleteBtnClicked = target.includes("delete-");
+    console.log("Is this a delete command? ",isDeleteBtnClicked, " Target variable contains: ", target);
+    $(`#${target}`).parent().remove();
+}
+
 
 function editPost(updateKey){
 
