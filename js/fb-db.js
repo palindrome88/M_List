@@ -83,7 +83,9 @@ let getFBUser = (userInfo) => {
 let deletePost = (key) => {
     console.log("Deleting the contents of key: ", key);
     return $.ajax({
-        url: `${firebase.getFBsettings().databaseURL}/posts/${key}.json"`,
+        async: true,
+        crossDomain: true,
+        url: `${firebase.getFBsettings().databaseURL}/critiques/${key}.json`,
         method: "DELETE"
     }).done((data)=>{
         console.log("DELETED if null: ", data);

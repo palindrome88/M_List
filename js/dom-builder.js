@@ -23,16 +23,19 @@ let movieObject = {};
 // Checks for id of the number.
 $(document).ready(function(){
     $(document).on( "click", "button", function(){
-        let stringTest = event.target.className;
+        let stringTest = event.target.id;
         let id = parseInt(event.target.id);
         if(!Number.isNaN(id)){ // is a number value
             console.log("Satisfied the test:", event.target.id);
             writeCritique(id, data);
         }
 
-        if(Number.isNaN(id) && (stringTest.includes("delete button"))){ // is not a value AND includes the string "delete button"
+        if(Number.isNaN(id) && (stringTest.includes("delete-"))){ // is not a value AND includes the string "delete button"
 
-            console.log("This test");
+            console.log("Delete button with id", stringTest);
+            console.log("Deletion value:", event.target.value);
+            let deletion = event.target.value;
+            db.deletePost(deletion);
         }
         else{ // not a button besides login and logout
             console.log("Not a rate button press", event.target.id);
@@ -102,12 +105,16 @@ function printUserProfile(result){
             
 
             let arr = Object.values(resolve);
+            let keys = Object.keys(resolve);
+            
+            console.log("We can manipulate these bits:", arr);
             let movieID;
 
             arr.forEach(function(item,index){
                 movieID = arr[index].movieID;
                 console.log("Movie ID:", movieID);
                 console.log("What's in arr:", arr[index]);
+                console.log("Keys at index: ", index, " is ", keys[index]);
                 fetchAPI.fetchID(movieID).then(
                     (resolve)=>{
                         console.log("Do we have it?", resolve);
@@ -123,7 +130,9 @@ function printUserProfile(result){
                             movieID: item.id,
                             rating: 0,
                             watched: false,
-                            inFB: false
+                            inFB: false,
+                            post: arr[index].post,
+                            values: keys[index]
                             };
                         }
                         else {
@@ -135,7 +144,9 @@ function printUserProfile(result){
                                 movieID: item.id,
                                 rating: 0,
                                 watched: false,
-                                inFB: false
+                                inFB: false,
+                                post: arr[index].post,
+                                values: keys[index]
                                 };
                             }
                         printUserHistory(movieObject, index);
@@ -158,25 +169,25 @@ function printUserHistory(thisMovie, index){
         
         cardList.innerHTML += 
         `<div class="p-2">
-            <div class="col xl4 l6 m6 s12" id=card--${thisMovie.id}>
-                    <div class="card sticky-action" id=cardSticky${thisMovie.id}>
-                        <div class="card-image waves-effect waves-block waves-light" id=cardImage${thisMovie.id}>
-                        <img id="activator icon${thisMovie.id}" class="movie-image" height="300" width="200" src="${thisMovie.poster}">
+            <div class="col xl4 l6 m6 s12" id=card--${thisMovie.movieID}>
+                    <div class="card sticky-action" id=cardSticky${thisMovie.movieID}>
+                        <div class="card-image waves-effect waves-block waves-light" id=cardImage${thisMovie.movieID}>
+                        <img id="activator icon${thisMovie.movieID}" class="movie-image" height="300" width="200" src="${thisMovie.poster}">
                         </div>
                         <div class="card-content">
-                                <span class="card-title activator grey-text text-darken-4 icon${thisMovie.id} col s10 truncate">${thisMovie.title}</span>
-                            <i class="material-icons right icon${thisMovie.id} col s2 activator">more_vert</i>
+                                <span class="card-title activator grey-text text-darken-4 icon${thisMovie.movieID} col s10 truncate">${thisMovie.title}</span>
+                            <i class="material-icons right icon${thisMovie.imovieIDd} col s2 activator">more_vert</i>
                         </div>
-                        <div class="card-reveal" id=reveal${thisMovie.id}>
+                        <div class="card-reveal" id=reveal${thisMovie.movieID}>
                             <span class="card-title grey-text text-darken-4">Overview<i class="material-icons right"></i></span>
                             <span>(${thisMovie.release_date})</span>
                             <p>${thisMovie.overview}</p>
                             
-                            <p id=castReveal${thisMovie.id}></p>
+                            <p id=castReveal${thisMovie.movieID}></p>
                         </div>
                             <div id=rate-${index} class=rateYo></div>
-                            <button id="${thisMovie.id}" value="${index}" class="delete-button">Delete Me</button>
-                            
+                            <button id="delete-${thisMovie.movieID}" value="${thisMovie.values}" class="delete-button">Delete Me</button>
+                            <p> ${thisMovie.post}</p>
                     </div>
                 </div>
         </div>`;
