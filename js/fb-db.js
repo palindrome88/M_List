@@ -91,6 +91,33 @@ let deletePost = (key) => {
         console.log("DELETED if null: ", data);
     });
     
+};
+
+let updatePost = (data, key) => {
+    console.log("Updating the contents of key: ", key);
+    return $.ajax({
+        async: true,
+        crossDomain: true,
+        url: `${firebase.getFBsettings().databaseURL}/critiques/${key}.json`,
+        method: "PUT",
+        data: JSON.stringify(data)
+    }).done((data)=>{
+        console.log(" if null: ", data);
+    });
+
+
+};
+
+let getSpecificPost = (key)=>{
+    console.log("Getting the contents of key: ", key);
+    return $.ajax({
+        async: true,
+        crossDomain: true,
+        url: `${firebase.getFBsettings().databaseURL}/critiques/${key}.json`,
+        method: "GET"
+    }).done((data)=>{
+        console.log(" Retrieved this: ", data);
+    });
 
 };
 
@@ -99,5 +126,4 @@ let deletePost = (key) => {
 
 
 
-
-module.exports = {postCritique, connectionTest, setfbUser, getFBUser, getUserHistory, deletePost};
+module.exports = {postCritique, getSpecificPost, updatePost, connectionTest, setfbUser, getFBUser, getUserHistory, deletePost};

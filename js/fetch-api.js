@@ -10,7 +10,7 @@ let $ = require("jquery"),
 console.log("fetch-api.js is attached.");
 
 function fetchMovie(movieSearchQuery){
-// Search Bar function
+// This generally works with the search bar.
     return new Promise((resolve) =>{
         let movieLoader = new XMLHttpRequest();
 
@@ -34,7 +34,7 @@ function fetchMovie(movieSearchQuery){
 
 
 function fetchID(movieSearchQuery){
-    // Search Bar function
+    
         return new Promise((resolve,reject) =>{
             let movieLoader = new XMLHttpRequest();
         

@@ -2,7 +2,6 @@
 // Document objects
 let cardList = document.getElementById("card-area2"),
     profileArea = document.getElementById("profile-content"),
-    //parentRater = document.getElementById("card-area"),
     parentDelete = document.getElementById("card-area");
     
 
@@ -16,10 +15,7 @@ let data;
 let critInput;
 let movieObject = {};
 
-// Event Listeners
-/*parentRater.addEventListener("click", submitMovieID, false);
 
-*/
 // Checks for id of the number.
 $(document).ready(function(){
     $(document).on( "click", "button", function(){
@@ -30,12 +26,18 @@ $(document).ready(function(){
             writeCritique(id, data);
         }
 
-        if(Number.isNaN(id) && (stringTest.includes("delete-"))){ // is not a value AND includes the string "delete button"
+        if(Number.isNaN(id) && (stringTest.includes("delete-"))){ // is not a value AND includes the string "delete-"
 
-            console.log("Delete button with id", stringTest);
+            console.log("Delete button with id:", stringTest);
             console.log("Deletion value:", event.target.value);
             let deletion = event.target.value;
             db.deletePost(deletion);
+        }
+        if(Number.isNaN(id) && (stringTest.includes("update-"))){
+            console.log("Update button with id:", stringTest);
+            console.log("Update key for database:", event.target.value);
+            let updateKey = event.target.value;
+            editPost(updateKey);
         }
         else{ // not a button besides login and logout
             console.log("Not a rate button press", event.target.id);
@@ -43,6 +45,33 @@ $(document).ready(function(){
     });
 });
 
+function editPost(updateKey){
+
+    console.log(updateKey);
+    db.getSpecificPost(updateKey).then((resolve, reject)=>{
+        let toEditData = resolve;
+        console.log("Edit data:", toEditData);
+        cardList.innerHTML = " ";
+        cardList.innerHTML += `<i>Rewrite the critique!!</i></br><div class="p-2">
+        <textarea id="critique-rewrite" class="form-control" rows="5" rows="4" cols="50">${toEditData.post}
+        </textarea>
+        </div>`;
+
+    var editedInput = $('#critique-rewrite')[0].addEventListener("keydown", function(e){
+
+        let editedPacket = {};
+
+        // Make a packet containing the goods.
+        if (e.keyCode === 13 && e.target.value != "")  {
+            editedPacket.post = e.target.value;
+            editedPacket.movieID = toEditData.movieID;
+            editedPacket.uid = toEditData.uid;
+            db.updatePost(editedPacket, updateKey);
+        }
+    
+      });
+    });
+}
 
 function cardPrinter(thisMovie, allData){
     data = allData;
@@ -76,10 +105,7 @@ function cardPrinter(thisMovie, allData){
                 </div>
         </div>`;
         
-    });
-    
-    
-    
+    });  
 }
 
 function printUserProfile(result){
@@ -90,16 +116,10 @@ function printUserProfile(result){
 
     // USER HISTORY tied to the profile image.
     $("#profile-history").click(function(){
+        cardList.innerHTML = " ";
         let UID = result.user.uid;
         console.log("UID:", UID);
-        // firstThingAsync()  
-        //     .then(function(result1) {
-        //         return Promise.all([result1, secondThingAsync(result1)]); 
-        //     })
-        //     .then(function(results) {
-        //         // do something with results array: results[0], results[1]
-        //     })
-        //     .catch(function(err){ /* ... */ });
+       
     
         db.getUserHistory(UID).then(function(resolve){
             
@@ -163,10 +183,7 @@ function printUserProfile(result){
     });
 }
 function printUserHistory(thisMovie, index){
-    
-    
-    
-        
+
         cardList.innerHTML += 
         `<div class="p-2">
             <div class="col xl4 l6 m6 s12" id=card--${thisMovie.movieID}>
@@ -186,7 +203,8 @@ function printUserHistory(thisMovie, index){
                             <p id=castReveal${thisMovie.movieID}></p>
                         </div>
                             <div id=rate-${index} class=rateYo></div>
-                            <button id="delete-${thisMovie.movieID}" value="${thisMovie.values}" class="delete-button">Delete Me</button>
+                            <button id="delete-${thisMovie.movieID}" value="${thisMovie.values}" class="delete-button">Delete</button>
+                            <button id="update-${thisMovie.movieID}" value="${thisMovie.values}" class="update-button">Update</button>
                             <p> ${thisMovie.post}</p>
                     </div>
                 </div>
@@ -213,43 +231,12 @@ function writeCritique(movieID, allData){
         packet.post = e.target.value;
         packet.movieID = movieID;
         packet.uid = uid;
-
         submitCritique(packet);
     }
 
     });
 
 
-    // // Creates a div that overwrites the rated movies entirely.
-
-    // // ISSUES -- This runs twice according to some event firing double. I don't know why as of yet but this is definitely a fix needed.
-    // cardList.innerHTML = "";
-    // cardList.innerHTML = `<i>Write a critique!!</i></br><div class="p-2">
-    // <textarea id="critique" class="form-control" rows="5" rows="4" cols="50">
-    // </textarea>
-    // </div>`;
-
-    // console.log("We can write the critique to this address: ", data);
-    //  let values = Object.values(data);
-   
-    // values = values[0];
-    // values.movieID = movieID;
-    // let critiqueArea = document.getElementById("critique");
-    // critiqueArea.addEventListener("keypress", function(e){
-    //     if (e.keyCode === 13 && e.target.value != "")  {
-    //         values.post = $("#critique").val();
-    //         console.log(values.post);
-    //         e.stopPropagation();
-    //     }
-    // });
-
-    
-    // console.log(values);
-    // db.postCritique(values).then(
-    //     (resolve)=>{
-    //         console.log(resolve);
-            
-    // });
 }
 
 
@@ -265,25 +252,4 @@ function submitCritique(packet){
 
 }
 
-/*function submitMovieID(e) {
-    // Gets the target information for button press, then calls a dom-builder method to compose the environment to make a review, then performs a db-method to send the information to the database.
-    if (e.target !== e.currentTarget) {
-        var clickedItem = e.target.value;
-        writeCritique(clickedItem);
-    }
-    e.stopPropagation();
-}*/
-
-function deleteCritique(e){
-    if (e.target !== e.currentTarget) {
-        var clickedItem = e.target.value;
-        console.log("Key of the Item to Delete", clickedItem);
-        db.deletePost(clickedItem).then((resolve)=>{
-
-            console.log("Successfully deleted", resolve);
-        });
-    }
-    e.stopPropagation();
-
-}
 module.exports = {cardPrinter , printUserProfile};
