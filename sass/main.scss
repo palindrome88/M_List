@@ -45,7 +45,58 @@ p{
 
 .username{
 
-    font-family: bagatela, serif;
+    font-family: 'Playfair Display', serif;
     font-style: italic;
-    font-weight: 700;
+    font-weight: 400;
 }
+
+.card-title{
+
+    font-family: 'Playfair Display', serif;
+    font-style: regular;
+    font-weight: 700;
+    font-size: 60px;
+}
+
+.card-text{
+
+    font-family: 'Playfair Display', serif;
+    font-style: regular;
+    font-weight: 400;
+    font-size: 22px;
+}
+
+.card-subtitle{
+
+    font-family: 'Lato', sans-serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 20px;
+}
+
+.movie-title-dynamic{
+    font-family: 'Lato', sans-serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 20px;
+}
+
+.movie-description-dynamic{
+
+    font-family: 'Lato', sans-serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 20px;
+}
+.navbar-header{
+
+    display: inline;
+    float: left;
+}
+
+.navbar-header > img {
+    display: inline-block;
+    float: left;
+    padding: 0 15px 0 0;
+  }
+  

@@ -105,7 +105,7 @@ function cardPrinter(thisMovie, allData){
                 IMAGE BEGINS ---
                 ***END NOTE**
                 */''}
-                <div class="card bg-light mb-3 card text-center" style="max-width: 18rem;">
+                <div class="dynamic-card-container card sticky-action card bg-light mb-3 card text-center" style="max-width: 18rem;">
                         <div class="header card sticky-action" id=cardSticky${thisMovie[index].movieID}>
                             <div class="card-image waves-effect waves-block waves-light" id=cardImage${thisMovie[index].movieID}>
                                 <img id="activator icon${thisMovie[index].movieID}" class="movie-image" height="300" width="200" src="${thisMovie[index].poster}">
@@ -231,38 +231,78 @@ function printUserProfile(result){
 function printUserHistory(thisMovie, index){
     // Critique related function. The function fires upon profile click, and prints the results from the theMovieDB api call & the firebase call. 
 
-        cardList.innerHTML += 
-        `<div class="p-2">
-            <div class="card-unspecified" id=card--${thisMovie.movieID}>
-                    <div class="card sticky-action" id=cardSticky${thisMovie.movieID}>
-                        <div class="card-image waves-effect waves-block waves-light" id=cardImage${thisMovie.movieID}>
-                            <img id="activator icon${thisMovie.movieID}" class="movie-image" height="300" width="200" src="${thisMovie.poster}">
+        cardList.innerHTML += `<div class="row">
+        <div class="col-sm-6" id=card--${ thisMovie.movieID}>
+        ${/* 
+            ***NOTE***
+
+
+            IMAGE BEGINS ---
+            ***END NOTE**
+            */''}
+            <div class="dynamic-card-container card sticky-action card bg-light mb-3 card text-center" style="max-width: 18rem;">
+                    <div class="header card sticky-action" id=cardSticky${thisMovie.movieID}>
+                        <div class="card-image waves-effect waves-block waves-light" id=cardImage${ thisMovie.movieID}>
+                            <img id="activator icon${ thisMovie.movieID}" class="movie-image" height="300" width="200" src="${ thisMovie.poster}">
                         </div>
+                        ${/* 
+                            ***NOTE***
+                            IMAGE ENDS---
+
+                            
+                            HEADER SECTION BEGINS
+                            TITLE follows
+                            ***END NOTE**
+                            */''}
                         <div class="card-content">
-                            <span class="card-title activator grey-text text-darken-4 icon${thisMovie.movieID} col s10 truncate">${thisMovie.title}</span>
-                            <i class="material-icons right icon${thisMovie.imovieIDd} col s2 activator">more_vert</i>
+                                <span class="card-title activator grey-text text-darken-4 icon${ thisMovie.movieID} col s10 truncate">${ thisMovie.title}</span>
+                                <i class="material-icons right icon${ thisMovie.movieID} col s2 activator"></i>
                         </div>
-                        <div class="card-reveal" id=reveal${thisMovie.movieID}>
-                            <span class="card-title grey-text text-darken-4">Overview<i class="material-icons right"></i></span>
-                            <span>(${thisMovie.release_date})</span>
-                            <p>${thisMovie.overview}</p>
-                            <p id=castReveal${thisMovie.movieID}></p>
+                        ${/* 
+                            ***NOTE***
+                            DESCRIPTION
+                            ***
+                            YEAR 
+                            ACTUAL OVERVIEW
+                            EMPTY CAST LIST
+                            ***
+                            ***END NOTE**
+                            */''}
+                        <div class="card-reveal" id=reveal${ thisMovie.movieID}>
+                            <span class="card-title grey-text text-darken-4">
+                            </span>
+                            <span>(${ thisMovie.year})</span>
+                            <p>${ thisMovie.overview}</p>
+                            <p id=castReveal${ thisMovie.movieID}></p>
                         </div>
-                            <div id=rate-${index} class=rateYo></div>
+                        <div id=rate-${index} class=rateYo></div>
+
+                        ${/* 
+                            ***NOTE***
+                            DESCRIPTION ENDS HERE
+
+                            BUTTON BELOW
+                            ***END NOTE**
+                            */''}
+                            ${/* 
+                        <div class="container">
+                            <button class= "btn btn-secondary" id="${ thisMovie.movieID}"> Rate this movie! </button>
+                            ***NOTE***
+                            Buttons below.
+                            ***END NOTE**
+                            */''}
+                            <div class="container">
                             <h2>Critique ${index+1}</h2>
                             <p> ${thisMovie.post}</p>
-                            ${/* 
-                                ***NOTE***
-                                Buttons below.
-                                ***END NOTE**
-                                */''}
-                        <div class="container">
                             <button id="delete-${thisMovie.movieID}" value="${thisMovie.values}" class="btn btn-primary btn-md">Delete</button>
                             <button id="update-${thisMovie.movieID}" value="${thisMovie.values}" class="btn btn-primary btn-md">Update</button>
-                        <div>
-                    </div>
+                     </div>
                 </div>
-        </div>`;
+            </div>
+        </div>
+    </div>`;
+
+       
     }
 
 function writeCritique(movieID, allData){
