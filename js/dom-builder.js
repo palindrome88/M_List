@@ -96,8 +96,8 @@ function cardPrinter(thisMovie, allData){
     thisMovie.forEach(function(item, index){
 
         cardList.innerHTML += 
-        `<div>
-            <div class="col xl4 l6 m6 s12" id=card--${thisMovie[index].movieID}>
+        `<div class="row">
+            <div class="col-sm-6" id=card--${thisMovie[index].movieID}>
             ${/* 
                 ***NOTE***
 
@@ -105,55 +105,56 @@ function cardPrinter(thisMovie, allData){
                 IMAGE BEGINS ---
                 ***END NOTE**
                 */''}
-                    <div class="header card sticky-action" id=cardSticky${thisMovie[index].movieID}>
-                        <div class="card-image waves-effect waves-block waves-light" id=cardImage${thisMovie[index].movieID}>
-                            <img id="activator icon${thisMovie[index].movieID}" class="movie-image" height="300" width="200" src="${thisMovie[index].poster}">
-                        </div>
+                <div class="card bg-light mb-3 card text-center" style="max-width: 18rem;">
+                        <div class="header card sticky-action" id=cardSticky${thisMovie[index].movieID}>
+                            <div class="card-image waves-effect waves-block waves-light" id=cardImage${thisMovie[index].movieID}>
+                                <img id="activator icon${thisMovie[index].movieID}" class="movie-image" height="300" width="200" src="${thisMovie[index].poster}">
+                            </div>
+                            ${/* 
+                                ***NOTE***
+                                IMAGE ENDS---
 
-                        ${/* 
-                            ***NOTE***
-                            IMAGE ENDS---
+                                
+                                HEADER SECTION BEGINS
+                                TITLE follows
+                                ***END NOTE**
+                                */''}
+                            <div class="card-content">
+                                    <span class="card-title activator grey-text text-darken-4 icon${thisMovie[index].movieID} col s10 truncate">${thisMovie[index].title}</span>
+                                    <i class="material-icons right icon${thisMovie[index].movieID} col s2 activator"></i>
+                            </div>
+                            ${/* 
+                                ***NOTE***
+                                DESCRIPTION
+                                ***
+                                YEAR 
+                                ACTUAL OVERVIEW
+                                EMPTY CAST LIST
+                                ***
+                                ***END NOTE**
+                                */''}
+                            <div class="card-reveal" id=reveal${thisMovie[index].movieID}>
+                                <span class="card-title grey-text text-darken-4">
+                                </span>
+                                <span>(${thisMovie[index].year})</span>
+                                <p>${thisMovie[index].overview}</p>
+                                <p id=castReveal${thisMovie[index].movieID}></p>
+                            </div>
+                            <div id=rate-${index} class=rateYo></div>
 
-                            
-                            HEADER SECTION BEGINS
-                            TITLE follows
-                            ***END NOTE**
-                            */''}
-                        <div class="card-content">
-                                <span class="card-title activator grey-text text-darken-4 icon${thisMovie[index].movieID} col s10 truncate">${thisMovie[index].title}</span>
-                                <i class="material-icons right icon${thisMovie[index].movieID} col s2 activator"></i>
-                        </div>
-                        ${/* 
-                            ***NOTE***
-                            DESCRIPTION
-                            ***
-                            YEAR 
-                            ACTUAL OVERVIEW
-                            EMPTY CAST LIST
-                            ***
-                            ***END NOTE**
-                            */''}
-                        <div class="card-reveal" id=reveal${thisMovie[index].movieID}>
-                            <span class="card-title grey-text text-darken-4">
-                            </span>
-                            <span>(${thisMovie[index].year})</span>
-                            <p>${thisMovie[index].overview}</p>
-                            <p id=castReveal${thisMovie[index].movieID}></p>
-                        </div>
-                        <div id=rate-${index} class=rateYo></div>
+                            ${/* 
+                                ***NOTE***
+                                DESCRIPTION ENDS HERE
 
-                        ${/* 
-                            ***NOTE***
-                            DESCRIPTION ENDS HERE
-
-                            BUTTON BELOW
-                            ***END NOTE**
-                            */''}
-                        <div class="container">
-                            <button class= "btn btn-secondary" id="${thisMovie[index].movieID}"> Rate this movie! </button>
+                                BUTTON BELOW
+                                ***END NOTE**
+                                */''}
+                            <div class="container">
+                                <button class= "btn btn-secondary" id="${thisMovie[index].movieID}"> Rate this movie! </button>
                         </div>
                     </div>
                 </div>
+            </div>
         </div>`;
         
     });  
@@ -165,7 +166,7 @@ function printUserProfile(result){
     profileArea.innerHTML = 
     `<span>
         <img src=${result.additionalUserInfo.profile.picture}  id="profile-history" class="rounded-circle" height="100" width="100"></br>
-        <p class="username"><i>${result.user.displayName}</i></p>
+        <p class="username">${result.user.displayName}</p>
     </span>`;
 
     // USER HISTORY tied to the profile image.

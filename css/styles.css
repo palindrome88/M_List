@@ -32,4 +32,9 @@ p {
   margin-bottom: 10px;
   /* Added */ }
 
+.username {
+  font-family: bagatela, serif;
+  font-style: italic;
+  font-weight: 700; }
+
 /*# sourceMappingURL=styles.css.map */
